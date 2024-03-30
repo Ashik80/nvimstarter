@@ -383,6 +383,9 @@ require('lazy').setup({
     priority = 1000,
     init = function()
       vim.cmd.colorscheme 'tokyonight-night'
+
+      vim.cmd.hi 'NormalFloat guibg=#1f2231'
+      vim.cmd.hi 'Pmenu guibg=#1f2231'
     end,
   },
 

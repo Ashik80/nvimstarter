@@ -343,11 +343,30 @@ require('lazy').setup({
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
 
+      local source_names = {
+        buffer = "[Buffer]",
+        nvim_lsp = "[LSP]",
+        luasnip = "[LuaSnip]",
+        nvim_lua = "[Lua]",
+        latex_symbols = "[LaTeX]",
+      }
+
       cmp.setup {
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
           end,
+        },
+        ---@diagnostic disable-next-line: missing-fields
+        formatting = {
+          format = function(entry, vim_item)
+            vim_item.menu = source_names[entry.source.name]
+            return vim_item
+          end
+        },
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
         },
         completion = { completeopt = 'menu,menuone,noselect' },
         mapping = cmp.mapping.preset.insert {

@@ -332,6 +332,71 @@ require('lazy').setup({
           end
           return 'make install_jsregexp'
         end)(),
+        config = function()
+          local ls = require("luasnip")
+          local snip = ls.snippet
+          local text = ls.text_node
+          local insert = ls.insert_node
+          local func = ls.function_node
+
+          local function copy(args)
+            return args[1]
+          end
+
+          local function react_snippets(filetype)
+            ls.add_snippets(filetype, {
+              snip('rfc', {
+                text({'import React from \'react\';', '', ''}),
+                text('export function '), insert(1, 'ComponentName'), text({'() {', ''}),
+                text({'\treturn (', ''}),
+                text('\t\t<div>'), insert(2, 'body'), text({'</div>', ''}),
+                text({'\t);', ''}),
+                text('}'),
+              }),
+              snip('rafc', {
+                text({'import React from \'react\';', '', ''}),
+                text('const '), insert(1, 'ComponentName'), text({' = () => {', ''}),
+                text({'\treturn (', ''}),
+                text('\t\t<div>'), insert(2, 'body'), text({'</div>', ''}),
+                text({'\t);', ''}),
+                text({'};', '', ''}),
+                text('export default '), func(copy, 1), text(';')
+              }),
+              snip('sta', {
+                text('const ['), insert(1, 'state'), text(', '),
+                insert(2, 'setState'), text('] = useState('), insert(3, '\'initialValue\''), text(');'),
+              })
+            })
+          end
+
+          local function html_snippets()
+            ls.add_snippets('html', {
+              snip('html', {
+                text({'<!DOCTYPE html>', ''}),
+                text({'<html>', ''}),
+                text({'<head>', ''}),
+                text({'\t<meta charset="UTF-8">', ''}),
+                text({'\t<meta name="description" content="A nice description">', ''}),
+                text({'\t<meta name="keywords" content="HTML, CSS, JavaScript">', ''}),
+                text({'\t<meta name="viewport" content="width=device-width, initial-scale=1.0">', ''}),
+                text('\t<title>'), insert(2, 'Title'), text({'</title>', ''}),
+                text({'</head>', ''}),
+                text({'<body>', ''}),
+                text('\t'), insert(1, 'body'),
+                text({'', '</body>', ''}),
+                text('</html>'),
+              })
+            })
+          end
+
+          local filetypes = {'javascriptreact', 'typescriptreact'}
+
+          for _, filetype in ipairs(filetypes) do
+            react_snippets(filetype)
+          end
+
+          html_snippets()
+        end
       },
       'saadparwaiz1/cmp_luasnip',
       'hrsh7th/cmp-nvim-lsp',

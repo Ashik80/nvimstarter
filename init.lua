@@ -1,8 +1,6 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
-vim.g.have_nerd_font = false
-
 vim.opt.number = true
 vim.opt.mouse = 'a'
 vim.opt.showmode = false
@@ -18,13 +16,13 @@ vim.opt.wildignorecase = true
 
 vim.opt.signcolumn = 'yes'
 
-vim.opt.timeoutlen = 300
-
 -- Configure how new splits should be opened
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 
 -- Sets how neovim will display certain whitespace characters in the editor.
+--  See `:help 'list'`
+--  and `:help 'listchars'`
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
@@ -33,8 +31,6 @@ vim.opt.inccommand = 'split'
 
 -- Show which line your cursor is on
 vim.opt.cursorline = true
---  See `:help 'list'`
---  and `:help 'listchars'`
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
@@ -111,20 +107,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>gb', '<cmd>Gitsigns blame_line<CR>', { desc = '[G]it [B]lame current line' })
     end
   },
-
-  -- {
-  --   'echasnovski/mini.nvim',
-  --   config = function()
-  --
-  --     local statusline = require 'mini.statusline'
-  --     statusline.setup {}
-  --
-  --     ---@diagnostic disable-next-line: duplicate-set-field
-  --     statusline.section_location = function()
-  --       return '%2l:%-2v'
-  --     end
-  --   end,
-  -- },
 
   {
     'nvim-lualine/lualine.nvim',
@@ -298,9 +280,7 @@ require('lazy').setup({
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
-      })
+
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
@@ -406,6 +386,7 @@ require('lazy').setup({
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-buffer',
     },
+
     config = function()
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'

@@ -114,6 +114,11 @@ require('lazy').setup({
       require 'lualine'.setup({
         options = {
           section_separators = ""
+        },
+        sections = {
+          lualine_c = {
+            { 'filename', path = 1 }
+          }
         }
       })
     end

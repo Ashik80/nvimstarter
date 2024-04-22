@@ -49,7 +49,11 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagn
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+-- Terminal mappings
 vim.keymap.set('t', '<leader><leader>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+
+-- Quit everything without saving
+vim.keymap.set('n', '<leader>q', '<cmd>qa!<CR>', { desc = '[Q]uit everything' })
 
 -- Copy current file name
 vim.keymap.set('n', '<leader>yf', '<cmd>let @f =  expand("%:.")<CR>', { desc = '[Y]ank current [F]ile name' })
@@ -468,7 +472,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'lua', 'markdown', 'javascript', 'typescript', 'python', 'rust' },
+      ensure_installed = { 'lua', 'markdown', 'javascript', 'vimdoc', 'typescript', 'python', 'rust' },
       highlight = {
         enable = true,
         additional_vim_regex_highlighting = false,
@@ -479,4 +483,6 @@ require('lazy').setup({
       require('nvim-treesitter.configs').setup(opts)
     end,
   },
+
+  { 'skywind3000/vim-color-export' },
 })

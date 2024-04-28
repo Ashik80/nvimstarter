@@ -23,8 +23,8 @@ vim.opt.splitbelow = true
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
-vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+-- vim.opt.list = true
+-- vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
@@ -40,8 +40,10 @@ vim.opt.foldmethod = 'indent'
 vim.opt.foldlevel = 99
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
-vim.opt.hlsearch = true
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.opt.hlsearch = false
+
+-- colorscheme
+vim.cmd [[colorscheme koehler]]
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
@@ -65,12 +67,6 @@ vim.keymap.set({'n', 'v'}, '<leader>cp', '"+p', { desc = 'Paste form clipboard' 
 -- Indent manually
 vim.keymap.set('v', '>', '>gv', { desc = 'Indent to the right' })
 vim.keymap.set('v', '<', '<gv', { desc = 'Indent to the left' })
-
---  See `:help wincmd` for a list of all window commands
--- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
--- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
--- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
--- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -117,6 +113,7 @@ require('lazy').setup({
     config = function ()
       require 'lualine'.setup({
         options = {
+          theme = 'ayu_dark',
           section_separators = ""
         },
         sections = {
@@ -422,10 +419,6 @@ require('lazy').setup({
             return vim_item
           end
         },
-        window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
-        },
         completion = { completeopt = 'menu,menuone,noselect' },
         mapping = cmp.mapping.preset.insert {
           ['<C-n>'] = cmp.mapping.select_next_item(),
@@ -452,17 +445,6 @@ require('lazy').setup({
           { name = 'buffer' },
         },
       }
-    end,
-  },
-
-  {
-    'folke/tokyonight.nvim',
-    priority = 1000,
-    init = function()
-      vim.cmd.colorscheme 'tokyonight-night'
-
-      vim.cmd.hi 'NormalFloat guibg=#1f2231'
-      vim.cmd.hi 'Pmenu guibg=#1f2231'
     end,
   },
 

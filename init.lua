@@ -20,9 +20,6 @@ vim.opt.signcolumn = 'yes'
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
 -- vim.opt.list = true
 -- vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
@@ -41,9 +38,6 @@ vim.opt.foldlevel = 99
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = false
-
--- colorscheme
-vim.cmd [[colorscheme koehler]]
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
@@ -68,6 +62,10 @@ vim.keymap.set({'n', 'v'}, '<leader>cp', '"+p', { desc = 'Paste form clipboard' 
 vim.keymap.set('v', '>', '>gv', { desc = 'Indent to the right' })
 vim.keymap.set('v', '<', '<gv', { desc = 'Indent to the left' })
 
+-- Navigate quickfix list
+vim.keymap.set('n', '<C-h>', '<cmd>cn<CR>', { desc = 'Go to next item in the quickfix list' })
+vim.keymap.set('n', '<C-k>', '<cmd>cp<CR>', { desc = 'Go to previous item in the quickfix list' })
+
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
 --  See `:help vim.highlight.on_yank()`
@@ -79,6 +77,26 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Saves the current file into a register
+function Save_file_to_register()
+  local file_name = vim.fn.expand("%:.")
+  local register = vim.fn.input("Enter register key: ")
+  vim.cmd("let @"..register.." = \":e "..file_name.."\"")
+end
+
+vim.keymap.set('n', '<leader>fr', Save_file_to_register, { desc = "Save [F]ile to [R]egister" } )
+
+-- Allow creating nested file
+vim.api.nvim_create_user_command("MkdirAndSave",
+  function ()
+    vim.cmd("silent !mkdir -p %:h")
+    vim.cmd.write()
+  end,
+{})
+
+vim.keymap.set('n', '<leader>w', '<cmd>MkdirAndSave<CR>', { desc = '[W]rite nested file' })
+
+-- Plugins
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
@@ -88,6 +106,15 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+
+  {
+    "rose-pine/neovim",
+    priority = 1000,
+    name = "rose-pine",
+    config = function ()
+      vim.cmd.colorscheme("rose-pine")
+    end
+  },
 
   { 'numToStr/Comment.nvim', opts = {} },
 
@@ -113,7 +140,6 @@ require('lazy').setup({
     config = function ()
       require 'lualine'.setup({
         options = {
-          theme = 'ayu_dark',
           section_separators = ""
         },
         sections = {
@@ -165,7 +191,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>fw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[S]earch [R]esume' })
+      -- vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>f.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
@@ -248,7 +274,7 @@ require('lazy').setup({
           map('K', vim.lsp.buf.hover, 'Hover Documentation')
 
           -- Provides signature help
-          map('<C-k>', vim.lsp.buf.signature_help, 'Signature Help')
+          vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature Help' })
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.

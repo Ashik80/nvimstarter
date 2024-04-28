@@ -5,6 +5,8 @@ vim.opt.number = true
 vim.opt.mouse = 'a'
 vim.opt.showmode = false
 
+vim.opt.guicursor = ""
+
 vim.opt.wrap = false
 
 vim.opt.tabstop = 4
@@ -85,13 +87,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- Saves the current file into a register
-function Save_file_to_register()
+function SaveFileToRegister()
   local file_name = vim.fn.expand("%:.")
   local register = vim.fn.input("Enter register key: ")
   vim.cmd("let @"..register.." = \":e "..file_name.."\"")
 end
 
-vim.keymap.set('n', '<leader>fr', Save_file_to_register, { desc = "Save [F]ile to [R]egister" } )
+vim.keymap.set('n', '<leader>fr', SaveFileToRegister, { desc = "Save [F]ile to [R]egister" } )
 
 -- Allow creating nested file
 vim.api.nvim_create_user_command("MkdirAndSave",
@@ -102,6 +104,33 @@ vim.api.nvim_create_user_command("MkdirAndSave",
 {})
 
 vim.keymap.set('n', '<leader>w', '<cmd>MkdirAndSave<CR>', { desc = '[W]rite nested file' })
+
+-- Toggle terminal
+function ToggleTerminal()
+  local buffer_list = vim.api.nvim_list_bufs()
+  local terminal_exists = false
+  for _, buffer in ipairs(buffer_list) do
+    local buffer_type = vim.api.nvim_buf_get_option(buffer, 'buftype')
+    if buffer_type == "terminal" then
+      if vim.fn.bufwinnr(buffer) < 0 then
+        vim.cmd.split()
+        vim.cmd.b(buffer)
+        vim.cmd.norm("i")
+      else
+        vim.cmd("execute "..vim.fn.bufwinnr(buffer).." \"close\"")
+      end
+      terminal_exists = true
+      break
+    end
+  end
+  if terminal_exists == false then
+    vim.cmd.split()
+    vim.cmd.terminal()
+    vim.cmd.norm("i")
+  end
+end
+
+vim.keymap.set({'n', 't'}, '<leader>t', ToggleTerminal)
 
 -- Plugins
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'

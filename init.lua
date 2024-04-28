@@ -63,8 +63,15 @@ vim.keymap.set('v', '>', '>gv', { desc = 'Indent to the right' })
 vim.keymap.set('v', '<', '<gv', { desc = 'Indent to the left' })
 
 -- Navigate quickfix list
-vim.keymap.set('n', '<C-h>', '<cmd>cn<CR>', { desc = 'Go to next item in the quickfix list' })
-vim.keymap.set('n', '<C-k>', '<cmd>cp<CR>', { desc = 'Go to previous item in the quickfix list' })
+vim.keymap.set('n', '<C-n>', '<cmd>cn<CR>', { desc = 'Go to next item in the quickfix list' })
+vim.keymap.set('n', '<C-p>', '<cmd>cp<CR>', { desc = 'Go to previous item in the quickfix list' })
+
+-- Substitute all occurences of word in line
+vim.keymap.set('v', '<leader>s', 'y:s/<c-r>"//g<left><left>', { desc = '[S]ubstitute visually selected word' })
+
+-- surround word with quotes
+vim.keymap.set('v', '<leader>"', 'c"<c-r>""<esc>')
+vim.keymap.set('v', '<leader>\'', 'c\'<c-r>"\'<esc>')
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -380,8 +387,34 @@ require('lazy').setup({
               snip('sta', {
                 text('const ['), insert(1, 'state'), text(', '),
                 insert(2, 'setState'), text('] = useState('), insert(3, '\'initialValue\''), text(');'),
-              })
+              }),
+              snip('img', {
+                text({'<img src="'}), insert(1), text({'" alt="'}), insert(2), text({'" />'})
+              }),
             })
+          end
+
+          local function html_jsx_common_snippets(filetype)
+            local snips = {
+              snip('div', {
+                text({'<div>'}), insert(1), text({'</div>'})
+              }),
+              snip('p', {
+                text({'<p>'}), insert(1), text({'</p>'})
+              }),
+              snip('button', {
+                text({'<button type="'}), insert(2, "button"), text({'">'}), insert(1), text({'</button>'})
+              }),
+              snip('title', {
+                text({'<title>'}), insert(1), text({'</title>'})
+              }),
+            }
+            for i = 1,6 do
+              table.insert(snips, snip('h'..i, {
+                text({'<h'..i..'>'}), insert(1), text({'</h'..i..'>'})
+              }))
+            end
+            ls.add_snippets(filetype, snips)
           end
 
           local function html_snippets()
@@ -400,14 +433,23 @@ require('lazy').setup({
                 text('\t'), insert(1, 'body'),
                 text({'', '</body>', ''}),
                 text('</html>'),
-              })
+              }),
+              snip('img', {
+                text({'<img src="'}), insert(1), text({'" alt="'}), insert(2), text({'">'})
+              }),
             })
           end
 
-          local filetypes = {'javascriptreact', 'typescriptreact'}
+          local react_filetypes = {'javascriptreact', 'typescriptreact'}
 
-          for _, filetype in ipairs(filetypes) do
+          for _, filetype in ipairs(react_filetypes) do
             react_snippets(filetype)
+          end
+
+          local html_jsx_filetypes = {'javascriptreact', 'typescriptreact', 'html'}
+
+          for _, filetype in ipairs(html_jsx_filetypes) do
+            html_jsx_common_snippets(filetype)
           end
 
           html_snippets()

@@ -48,7 +48,7 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagn
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Terminal mappings
-vim.keymap.set('t', '<leader><leader>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', '<C-w>N', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- Quit everything without saving
 vim.keymap.set('n', '<leader>q', '<cmd>qa!<CR>', { desc = '[Q]uit everything' })
@@ -74,6 +74,17 @@ vim.keymap.set('v', '<leader>s', 'y:s/<c-r>"//g<left><left>', { desc = '[S]ubsti
 -- surround word with quotes
 vim.keymap.set('v', '<leader>"', 'c"<c-r>""<esc>')
 vim.keymap.set('v', '<leader>\'', 'c\'<c-r>"\'<esc>')
+vim.keymap.set('v', '<leader>)', 'c(<c-r>")<esc>')
+vim.keymap.set('v', '<leader>}', 'c{<c-r>"}<esc>')
+vim.keymap.set('v', '<leader>]', 'c[<c-r>"]<esc>')
+
+-- Disable linenumber in terminal
+vim.api.nvim_create_autocmd("TermOpen", {
+  desc = "Disable linenumber in terminal",
+  callback = function ()
+    vim.opt_local.number = false
+  end
+})
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -130,7 +141,7 @@ function ToggleTerminal()
   end
 end
 
-vim.keymap.set({'n', 't'}, '<leader>t', ToggleTerminal)
+vim.keymap.set({'n', 't'}, '<M-t>', ToggleTerminal)
 
 -- Plugins
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'

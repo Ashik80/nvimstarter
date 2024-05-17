@@ -163,8 +163,6 @@ require('lazy').setup({
     end
   },
 
-  { 'numToStr/Comment.nvim', opts = {} },
-
   {
     'lewis6991/gitsigns.nvim',
     opts = {

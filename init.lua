@@ -573,4 +573,9 @@ require('lazy').setup({
   },
 
   { 'skywind3000/vim-color-export' },
+
+  {
+    'Exafunction/codeium.vim',
+    event = 'BufEnter'
+  },
 })
